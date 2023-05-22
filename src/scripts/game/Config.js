@@ -6,5 +6,10 @@ export const Config = {
     startScene: Game,
     scenes: {
         'Game': Game,
-    }
+    },
+    board: {
+        rows: 6,
+        cols: 6,
+    },
+    tilesColors: ['blue', 'green', 'orange', 'red', 'pink', 'yellow'],
 }

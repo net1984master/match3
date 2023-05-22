@@ -1,10 +1,13 @@
 import * as PIXI from "pixi.js";
 import {App} from '../system/App';
 import {Scene} from '../system/Scene';
+import {Field} from './Field';
+import {Board} from './Board';
 export class Game extends Scene{
     create() {
-        console.log('CREATE');
         this.createBackground();
+        const board = new Board();
+        this.container.addChild(board.container);
     }
 
     createBackground() {
