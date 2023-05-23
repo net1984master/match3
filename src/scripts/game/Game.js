@@ -40,16 +40,15 @@ export class Game extends Scene{
         this.selectedTile.field.select();
     }
 
-    swap(selectedTile, tile) {
+    async swap(selectedTile, tile) {
         this.disabled = true;
         this.clearSelection();
         selectedTile.sprite.zIndex = 2;
 
         selectedTile.moveTo(tile.field.position,0.2);
-        tile.moveTo(selectedTile.field.position,0.2).then(()=>{
-            this.board.swap(selectedTile, tile);
-            this.disabled = false;
-        })
+        await tile.moveTo(selectedTile.field.position,0.2);
+        this.board.swap(selectedTile, tile)
+        this.disabled = false;
     }
 
     clearSelection() {

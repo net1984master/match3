@@ -11,18 +11,13 @@ export class Tile {
         this.sprite.position = {...position};
     }
 
-    moveTo(position, duration) {
-        return new Promise(resolve => {
-           gsap.to(this.sprite, {
-               duration,
-               pixi: {
-                   x: position.x,
-                   y: position.y,
-               },
-               onComplete: () => {
-                   resolve();
-               }
-           })
+    async moveTo(position, duration) {
+        await gsap.to(this.sprite, {
+           duration,
+           pixi: {
+               x: position.x,
+               y: position.y,
+           }
         });
     }
 
