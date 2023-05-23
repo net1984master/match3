@@ -1,3 +1,4 @@
+import { gsap } from "gsap";
 import {App} from '../system/App';
 export class Tile {
     constructor(color) {
@@ -8,5 +9,24 @@ export class Tile {
 
     setPosition(position) {
         this.sprite.position = {...position};
+    }
+
+    moveTo(position, duration) {
+        return new Promise(resolve => {
+           gsap.to(this.sprite, {
+               duration,
+               pixi: {
+                   x: position.x,
+                   y: position.y,
+               },
+               onComplete: () => {
+                   resolve();
+               }
+           })
+        });
+    }
+
+    isNeighbour(tile) {
+        return Math.abs(this.field.row - tile.field.row) + Math.abs(this.field.col - tile.field.col) === 1
     }
 }
