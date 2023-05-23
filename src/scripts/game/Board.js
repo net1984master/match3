@@ -67,4 +67,7 @@ export class Board {
 
     }
 
+    getField(row, col) {
+        return this.fields.find(field => field.row === row && field.col === col);
+    }
 }
