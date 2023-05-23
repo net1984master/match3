@@ -52,7 +52,7 @@ export class Game extends Scene{
         selectedTile.moveTo(tile.field.position,0.2);
         await tile.moveTo(selectedTile.field.position,0.2);
         this.board.swap(selectedTile, tile)
-        this.combinationManager.getMathces();
+        this.processMatches(this.combinationManager.getMatches());
         this.disabled = false;
     }
 
@@ -61,5 +61,17 @@ export class Game extends Scene{
             this.selectedTile.field.unselect();
             this.selectedTile = null;
         }
+    }
+
+    processMatches(matches) {
+        if(matches.length) {
+            this.removeMatches(matches);
+        }
+    }
+
+    removeMatches(matches) {
+        matches.forEach(line => {
+            line.forEach(tile => tile.remove());
+        });
     }
 }

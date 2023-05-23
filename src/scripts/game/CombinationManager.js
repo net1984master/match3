@@ -5,7 +5,7 @@ export class CombinationManager {
         this.board = board;
     }
 
-    getMathces() {
+    getMatches() {
         let result = [];
         this.board.fields.forEach(field => {
             App.config.combinationRules.forEach(rule => {
@@ -25,12 +25,13 @@ export class CombinationManager {
                 }
             });
         });
-        result.forEach(line => {
-           line.forEach(tile => {
-               const redSprite = App.sprite('dot');
-               redSprite.anchor.set(0.5);
-               tile.sprite.addChild(redSprite);
-           })
-        });
+        return result;
+        // result.forEach(line => {
+        //    line.forEach(tile => {
+        //        const redSprite = App.sprite('dot');
+        //        redSprite.anchor.set(0.5);
+        //        tile.sprite.addChild(redSprite);
+        //    })
+        // });
     }
 }

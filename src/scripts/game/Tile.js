@@ -24,4 +24,10 @@ export class Tile {
     isNeighbour(tile) {
         return Math.abs(this.field.row - tile.field.row) + Math.abs(this.field.col - tile.field.col) === 1
     }
+
+    remove() {
+       const redSprite = App.sprite('dot');
+       redSprite.anchor.set(0.5);
+       this.sprite.addChild(redSprite);
+    }
 }
