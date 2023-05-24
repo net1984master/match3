@@ -32,4 +32,8 @@ export class Field {
     unselect() {
         this.selected.visible = false;
     }
+
+    isEmpty () {
+        return !this.tile;
+    }
 }

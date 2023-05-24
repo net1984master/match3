@@ -43,9 +43,12 @@ export class Board {
 
     createTiles() {
         this.fields.forEach(field => this.createTile(field));
+        // for (let i = 0; i < this.fields.length; i++) {
+        //     this.createTile(this.fields[i],App.config.testBoard[i]);
+        // }
     }
-    createTile(field) {
-        const tile = TileFactory.generate();
+    createTile(field, color) {
+        const tile = color ? new Tile(color) : TileFactory.generate();
         this.container.addChild(tile.sprite);
         field.setTile(tile);
 
@@ -53,6 +56,7 @@ export class Board {
         tile.sprite.on('pointerdown', () => {
             this.container.emit('tile-touch-start', tile);
         })
+        return tile;
     }
 
     swap(tile1, tile2) {
@@ -70,4 +74,5 @@ export class Board {
     getField(row, col) {
         return this.fields.find(field => field.row === row && field.col === col);
     }
+
 }

@@ -9,13 +9,14 @@ export class CombinationManager {
         let result = [];
         this.board.fields.forEach(field => {
             App.config.combinationRules.forEach(rule => {
+                // TODO: UM
                 let matches = [field.tile];
 
                 rule.forEach(position => {
                     const row = field.row + position.row;
                     const col = field.col + position.col;
                     const comparingField = this.board.getField(row, col);
-                    if (comparingField && comparingField.tile.color === field.tile.color) {
+                    if (comparingField && comparingField?.tile && comparingField.tile.color === field.tile.color) {
                         matches.push(comparingField.tile);
                     }
                 });
@@ -25,7 +26,6 @@ export class CombinationManager {
                 }
             });
         });
-        return result;
         // result.forEach(line => {
         //    line.forEach(tile => {
         //        const redSprite = App.sprite('dot');
@@ -33,5 +33,6 @@ export class CombinationManager {
         //        tile.sprite.addChild(redSprite);
         //    })
         // });
+        return result;
     }
 }

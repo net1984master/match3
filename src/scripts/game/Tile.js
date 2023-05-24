@@ -11,14 +11,36 @@ export class Tile {
         this.sprite.position = {...position};
     }
 
-    async moveTo(position, duration) {
-        await gsap.to(this.sprite, {
+    async moveTo(position, duration, delay, ease) {
+         await gsap.to(this.sprite, {
            duration,
+           delay,
+           ease,
            pixi: {
                x: position.x,
                y: position.y,
            }
         });
+    }
+    moveTo2(position, duration, delay, ease) {
+        return new Promise(resolve => {
+            gsap.to(this.sprite, {
+                duration,
+                delay,
+                ease,
+                pixi: {
+                    x: position.x,
+                    y: position.y
+                },
+                onComplete: () => {
+                    resolve('НАШЛИ')
+                }
+            });
+        });
+    }
+
+    fallDownTo(position, delay) {
+        return this.moveTo(position, 2, delay, "bounce.out");
     }
 
     isNeighbour(tile) {
@@ -26,8 +48,16 @@ export class Tile {
     }
 
     remove() {
-       const redSprite = App.sprite('dot');
-       redSprite.anchor.set(0.5);
-       this.sprite.addChild(redSprite);
+       if(!this.sprite) {
+           return;
+       }
+
+       this.sprite.destroy();
+       this.sprite = null;
+
+       if(this.field) {
+           this.field.tile = null;
+           this.field = null;
+       }
     }
 }
