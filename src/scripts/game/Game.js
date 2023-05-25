@@ -80,7 +80,7 @@ export class Game extends Scene{
                    tile.moveTo(selectedTile.field.position,0.2)],
         ).then(() => {
             this.board.swap(selectedTile, tile)
-            this.processMatches2();
+            this.processMatches2AW();
             this.disabled = false;
         });
     }
@@ -134,11 +134,59 @@ export class Game extends Scene{
         });
     }
 
+
+    async processMatches2AW() {
+        let matches = this.combinationManager.getMatches();
+        if(matches.length) {
+            this.removeMatches(matches);
+            await this.processFallDown2AW();
+            console.log('FINISH');
+//            await this.processFallDown();
+//            await this.fillEmptyFields();
+//            console.log('END');
+//            return this.combinationManager.getMatches();
+        }
+    }
+
+
+   async processFallDown2AW() {
+            const asyncTasks = [];
+            for (let row = this.board.rows - 1; row >=0 ; row--) {
+                for (let col = this.board.cols - 1; col >= 0 ; col--) {
+                    const field = this.board.getField(row, col);
+                    if (field.isEmpty()){
+                        asyncTasks.push(this.fallDownTo2AW(field));
+                        // this.fallDownTo2(field).then((data)=>{
+                        //     this.cmp++;
+                        //     if(this.cmp >= this.str) {
+                        //         resolve();
+                        //     }
+                        // });
+                    }
+                }
+            }
+            asyncTasks.forEach(async asyncTask => await asyncTask);
+    }
+
+    async fallDownTo2AW(emptyField) {
+        for (let row = emptyField.row - 1; row >= 0 ; row--) {
+            const failingField = this.board.getField(row, emptyField.col);
+            if (!failingField.isEmpty()){
+                emptyField.tile = failingField.tile;
+                emptyField.tile.field = emptyField;
+                failingField.tile = null;
+                return emptyField.tile.fallDownTo(emptyField.position, 0.2);
+            }
+        }
+        return;
+    }
+
+
     async processMatches2() {
         let matches = this.combinationManager.getMatches();
         if(matches.length) {
             this.removeMatches(matches);
-            this.processFallDown2()
+            this.processFallDown2AW()
                 .then(() => {
                     console.log('FINISH THEN');
                 })
