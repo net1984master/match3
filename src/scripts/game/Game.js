@@ -9,10 +9,9 @@ export class Game extends Scene{
 
     constructor() {
         super();
-        this.cmp=0;
-        this.str=0;
         this.selectedTile = null;
         this.disabled = false;
+        this.cnt = 1;
 
     }
 
@@ -79,9 +78,14 @@ export class Game extends Scene{
         Promise.all([selectedTile.moveTo(tile.field.position,0.2),
                    tile.moveTo(selectedTile.field.position,0.2)],
         ).then(() => {
-            this.board.swap(selectedTile, tile)
-            this.processMatches2AW();
-            this.disabled = false;
+            this.board.swap(selectedTile, tile);
+            // this.processMatchesStart();
+            let matches = this.combinationManager.getMatches();
+            if (matches.length) {
+                this.processMatches2(matches);
+            }else {
+                this.disabled = false;
+            }
         });
     }
 
@@ -96,14 +100,14 @@ export class Game extends Scene{
         // }
    // }
 
-    async processMatchesStart() {
+    onFallDownOver() {
+        console.log('onFallDownOver - ' + this.cnt);
+        this.cnt++;
         let matches = this.combinationManager.getMatches();
-        console.log('1');
-        const result = await this.processMatches(matches);
-        console.log('RESULT');
-        console.log(result);
-        if(result.length) {
-            this.processMatches(result);
+        if (matches.length > 0) {
+            this.processMatches2(matches);
+        } else {
+            this.disabled = false;
         }
     }
 
@@ -129,6 +133,7 @@ export class Game extends Scene{
     }
 
     removeMatches(matches) {
+        console.log('removeMatches - '+this.cnt);
         matches.forEach(line => {
             line.forEach(tile => tile.remove());
         });
@@ -153,6 +158,7 @@ export class Game extends Scene{
     }
 
     async processFallDown3AW() {
+        //Хоть такой подход и не работает, оставлю это здесь для истории
         //const asyncTasks = [];
         for (let row = this.board.rows - 1; row >=0 ; row--) {
             for (let col = this.board.cols - 1; col >= 0 ; col--) {
@@ -208,45 +214,54 @@ export class Game extends Scene{
         return;
     }
 
-
     async processMatches2() {
         let matches = this.combinationManager.getMatches();
-        if(matches.length) {
+        if (matches.length) {
             this.removeMatches(matches);
-            this.processFallDown2AW()
+            this.processFallDown2()
                 .then(() => {
-                    console.log('FINISH THEN');
+                    return this.addTiles2();
                 })
-                .catch(()=>{
-                    console.log('FINISH CATCH');
+                .then(() => {
+                    this.processMatches2();
                 })
-                .finally(()=>{
-                    console.log('FINISH FINALLY');
-                })
-
-
-//            await this.processFallDown();
-//            await this.fillEmptyFields();
-//            console.log('END');
-//            return this.combinationManager.getMatches();
+        } else {
+          this.disabled = false;
         }
     }
 
+   addTiles2() {
+       return new Promise(resolve => {
+           const fields = this.board.fields.filter(field => field.tile === null);
+           let total = fields.length;
+           let completed = 0;
+
+           fields.forEach(field => {
+               const tile = this.board.createTile(field);
+               tile.sprite.y = -500;
+               const delay = Math.random() * 2 / 10 + 0.3 / (field.row + 1);
+               tile.fallDownTo(field.position, delay).then(() => {
+                   ++completed;
+                   if (completed >= total) {
+                       resolve();
+                   }
+               });
+           });
+       });``
+   }
 
    processFallDown2() {
         return new Promise((resolve) => {
+            let started = 0;
+            let completed = 0;
             for (let row = this.board.rows - 1; row >=0 ; row--) {
                 for (let col = this.board.cols - 1; col >= 0 ; col--) {
                     const field = this.board.getField(row, col);
                      if (field.isEmpty()){
-                        // console.log('Вызываем '+(++this.counter));
-                        this.str++;
-                         console.log(`Отправляем str:${this.str} cmp${this.cmp}`);
+                        started++;
                         this.fallDownTo2(field).then((data)=>{
-                            this.cmp++;
-                            console.log(`Зенкаем str:${this.str} cmp${this.cmp}`);
-                            console.log(data)
-                            if(this.cmp >= this.str) {
+                            completed++;
+                            if(completed >= started) {
                                 resolve();
                             }
                         });

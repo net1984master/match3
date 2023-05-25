@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import {App} from '../system/App';
+
 export class Tile {
     constructor(color) {
         this.color = color;
@@ -40,7 +41,7 @@ export class Tile {
     }
 
     fallDownTo(position, delay) {
-        return this.moveTo(position, 2, delay, "bounce.out");
+        return this.moveTo(position, 0.5, delay, "bounce.out");
     }
 
     isNeighbour(tile) {
