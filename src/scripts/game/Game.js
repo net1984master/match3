@@ -139,7 +139,7 @@ export class Game extends Scene{
         let matches = this.combinationManager.getMatches();
         if(matches.length) {
             this.removeMatches(matches);
-            await this.processFallDown2AW();
+            await this.processFallDown3AW();
             console.log('FINISH');
 //            await this.processFallDown();
 //            await this.fillEmptyFields();
@@ -147,6 +147,33 @@ export class Game extends Scene{
 //            return this.combinationManager.getMatches();
         }
     }
+
+    asyncExecutor(fn) {
+        fn();
+    }
+
+    async processFallDown3AW() {
+        //const asyncTasks = [];
+        for (let row = this.board.rows - 1; row >=0 ; row--) {
+            for (let col = this.board.cols - 1; col >= 0 ; col--) {
+                const field = this.board.getField(row, col);
+                if (field.isEmpty()){
+                    this.asyncExecutor(async () => {
+                       await this.fallDownTo2AW(field);
+                    });
+                    //asyncTasks.push(this.fallDownTo2AW(field));
+                    // this.fallDownTo2(field).then((data)=>{
+                    //     this.cmp++;
+                    //     if(this.cmp >= this.str) {
+                    //         resolve();
+                    //     }
+                    // });
+                }
+            }
+        }
+        //asyncTasks.forEach(async asyncTask => await asyncTask);
+    }
+
 
 
    async processFallDown2AW() {
