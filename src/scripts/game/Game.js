@@ -76,7 +76,7 @@ export class Game extends Scene{
         this.disabled = false;
     }
 
-    async swap2(selectedTile, tile) {
+    async swap2(selectedTile, tile, reverse = false) {
         this.disabled = true;
         this.clearSelection();
         selectedTile.sprite.zIndex = 2;
@@ -93,14 +93,17 @@ export class Game extends Scene{
                    tile.moveTo(selectedTile.field.position,0.2)],
         ).then(() => {
             this.board.swap(selectedTile, tile);
-            // this.processMatchesStart();
-            let matches = this.combinationManager.getMatches();
-            if (matches.length) {
-                this.processMatches2AW(matches);
-            }else {
-                this.disabled = false;
+            const matches = reverse? [] : this.combinationManager.getMatches();
+            if (!matches.length && !reverse) {
+                this.swap2(tile, selectedTile,true)
+            }
+            else if (matches.length && !reverse) {
+                   this.processMatches2AW(matches);
+            } else {
+                    this.disabled = false;
             }
         });
+
     }
 
     // async processMatchesStart2() {
