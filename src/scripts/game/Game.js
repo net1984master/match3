@@ -23,7 +23,21 @@ export class Game extends Scene{
         this.board.container.on('tile-touch-start', this.onTileClick.bind(this));
 
         this.combinationManager = new CombinationManager(this.board);
+        this.removeStartMatches();
     }
+
+    removeStartMatches() {
+        let matches = this.combinationManager.getMatches();
+        while (matches.length) {
+            this.removeMatches(matches);
+            const fields = this.board.fields.filter(field => field.isEmpty());
+            fields.forEach(field => {
+                const tile = this.board.createTile(field);
+            })
+            matches = this.combinationManager.getMatches();
+        }
+    }
+
 
     onTileClick(tile) {
         if (this.disabled) return;
