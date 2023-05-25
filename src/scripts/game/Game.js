@@ -82,7 +82,7 @@ export class Game extends Scene{
             // this.processMatchesStart();
             let matches = this.combinationManager.getMatches();
             if (matches.length) {
-                this.processMatches2(matches);
+                this.processMatches2AW(matches);
             }else {
                 this.disabled = false;
             }
@@ -141,15 +141,15 @@ export class Game extends Scene{
 
 
     async processMatches2AW() {
+
         let matches = this.combinationManager.getMatches();
-        if(matches.length) {
+        if (matches.length) {
             this.removeMatches(matches);
-            await this.processFallDown2AW();
-            console.log('FINISH');
-//            await this.processFallDown();
-//            await this.fillEmptyFields();
-//            console.log('END');
-//            return this.combinationManager.getMatches();
+            await this.processFallDown2();
+            await this.addTiles2();
+            this.processMatches2();
+        } else {
+            this.disabled = false;
         }
     }
 
