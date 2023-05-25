@@ -139,7 +139,7 @@ export class Game extends Scene{
         let matches = this.combinationManager.getMatches();
         if(matches.length) {
             this.removeMatches(matches);
-            await this.processFallDown3AW();
+            await this.processFallDown2AW();
             console.log('FINISH');
 //            await this.processFallDown();
 //            await this.fillEmptyFields();
